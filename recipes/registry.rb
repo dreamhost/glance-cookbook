@@ -18,6 +18,7 @@
 #
 
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
+include_recipe "osops-utils::repo"
 include_recipe "mysql::client"
 include_recipe "mysql::ruby"
 

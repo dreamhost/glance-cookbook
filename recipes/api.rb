@@ -18,6 +18,9 @@
 # limitations under the License.
 #
 
+include_recipe "osops-utils"
+include_recipe "osops-utils::repo"
+
 platform_options = node["glance"]["platform"]
 
 package "curl" do
@@ -111,7 +114,7 @@ template "/etc/glance/glance-api.conf" do
     "registry_port" => registry_endpoint["port"],
     "use_syslog" => node["glance"]["syslog"]["use"],
     "log_facility" => node["glance"]["syslog"]["facility"],
-    "rabbit_ipaddress" => rabbit_info["ipaddress"],    #FIXME!
+    "rabbit_ipaddress" => IPManagement.get_ips_for_role("rabbitmq-server","nova",node)[0],    #FIXME!
     "default_store" => glance["api"]["default_store"],
     "glance_flavor" => glance_flavor,
     "swift_store_key" => swift_store_key,
