@@ -26,6 +26,7 @@ default["glance"]["services"]["api"]["scheme"] = "http"
 default["glance"]["services"]["api"]["network"] = "public"
 default["glance"]["services"]["api"]["port"] = 9292
 default["glance"]["services"]["api"]["path"] = "/v1"
+default["glance"]["services"]["api"]["worker_count"] = 1 # Number of API workers, recommends one per core.  Override in node.
 
 default["glance"]["services"]["registry"]["scheme"] = "http"
 default["glance"]["services"]["registry"]["network"] = "public"
@@ -72,7 +73,7 @@ when "fedora", "redhat", "centos"
 when "ubuntu"
   default["glance"]["platform"] = {
     "mysql_python_packages" => [ "python-mysqldb" ],
-    "glance_packages" => [ "glance", "python-swift" ],
+    "glance_packages" => [ "glance-common", "glance-api", "glance-registry", "glance", "python-swift", "python-keystoneclient", "python-prettytable" ],
     "glance_api_service" => "glance-api",
     "glance_registry_service" => "glance-registry",
     "glance_registry_process_name" => "glance-registry",

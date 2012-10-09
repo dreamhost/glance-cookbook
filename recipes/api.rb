@@ -123,24 +123,15 @@ template "/etc/glance/glance-api.conf" do
     "swift_store_auth_version" => swift_store_auth_version,
     "swift_large_object_size" => glance["api"]["swift"]["store_large_object_size"],
     "swift_large_object_chunk_size" => glance["api"]["swift"]["store_large_object_chunk_size"],
-    "swift_store_container" => glance["api"]["swift"]["store_container"]
-    )
-  notifies :restart, resources(:service => "glance-api"), :immediately
-end
-
-template "/etc/glance/glance-api-paste.ini" do
-  source "glance-api-paste.ini.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  variables(
+    "swift_store_container" => glance["api"]["swift"]["store_container"],
     "keystone_api_ipaddress" => ks_admin_endpoint["host"],
     "keystone_service_port" => ks_service_endpoint["port"],
     "keystone_admin_port" => ks_admin_endpoint["port"],
     "keystone_admin_token" => keystone["admin_token"],
     "service_tenant_name" => node["glance"]["service_tenant_name"],
     "service_user" => node["glance"]["service_user"],
-    "service_pass" => node["glance"]["service_pass"]
+    "service_pass" => node["glance"]["service_pass"],
+    "worker_count" => glance["api"]["worker_count"]
     )
   notifies :restart, resources(:service => "glance-api"), :immediately
 end
@@ -155,16 +146,15 @@ template "/etc/glance/glance-cache.conf" do
     "registry_port" => registry_endpoint["port"],
     "use_syslog" => node["glance"]["syslog"]["use"],
     "log_facility" => node["glance"]["syslog"]["facility"],
-    "image_cache_max_size" => node["glance"]["api"]["cache"]["image_cache_max_size"]
+    "image_cache_max_size" => node["glance"]["api"]["cache"]["image_cache_max_size"],
+    "keystone_api_ipaddress" => ks_admin_endpoint["host"],
+    "keystone_service_port" => ks_service_endpoint["port"],
+    "keystone_admin_port" => ks_admin_endpoint["port"],
+    "keystone_admin_token" => keystone["admin_token"],
+    "service_tenant_name" => node["glance"]["service_tenant_name"],
+    "service_user" => node["glance"]["service_user"],
+    "service_pass" => node["glance"]["service_pass"]
     )
-  notifies :restart, resources(:service => "glance-api"), :delayed
-end
-
-template "/etc/glance/glance-cache-paste.ini" do
-  source "glance-cache-paste.ini.erb"
-  owner "root"
-  group "root"
-  mode "0644"
   notifies :restart, resources(:service => "glance-api"), :delayed
 end
 
@@ -175,7 +165,9 @@ template "/etc/glance/glance-scrubber.conf" do
   mode "0644"
   variables(
     "registry_ip_address" => registry_endpoint["host"],
-    "registry_port" => registry_endpoint["port"]
+    "registry_port" => registry_endpoint["port"],
+    "use_syslog" => node["glance"]["syslog"]["use"],
+    "log_facility" => node["glance"]["syslog"]["facility"]
     )
 end
 
@@ -190,13 +182,6 @@ cron "glance-cache-cleaner" do
   minute "01"
   hour "00"
   command "/usr/bin/glance-cache-cleaner"
-end
-
-template "/etc/glance/glance-scrubber-paste.ini" do
-  source "glance-scrubber-paste.ini.erb"
-  owner "root"
-  group "root"
-  mode "0644"
 end
 
 # Register Image Service
