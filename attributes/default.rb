@@ -25,13 +25,13 @@ default["developer_mode"] = false  # we want secure passwords by default
 default["glance"]["services"]["api"]["scheme"] = "http"
 default["glance"]["services"]["api"]["network"] = "public"
 default["glance"]["services"]["api"]["port"] = 9292
-default["glance"]["services"]["api"]["path"] = "/v1"
+default["glance"]["services"]["api"]["path"] = "/v2"
 default["glance"]["services"]["api"]["worker_count"] = 1 # Number of API workers, recommends one per core.  Override in node.
 
 default["glance"]["services"]["registry"]["scheme"] = "http"
 default["glance"]["services"]["registry"]["network"] = "public"
 default["glance"]["services"]["registry"]["port"] = 9191
-default["glance"]["services"]["registry"]["path"] = "/v1"
+default["glance"]["services"]["registry"]["path"] = "/v2"
 
 default["glance"]["db"]["name"] = "glance"
 default["glance"]["db"]["username"] = "glance"

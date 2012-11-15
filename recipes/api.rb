@@ -23,6 +23,14 @@ include_recipe "osops-utils::repo"
 
 platform_options = node["glance"]["platform"]
 
+#creates db and user
+#returns connection info
+#defined in osops-utils/libraries
+mysql_info = create_db_and_user("mysql",
+  node["glance"]["db"]["name"],
+  node["glance"]["db"]["username"],
+  node["glance"]["db"]["password"])
+
 package "curl" do
   action :upgrade
 end
@@ -108,6 +116,10 @@ template "/etc/glance/glance-api.conf" do
   group "root"
   mode "0644"
   variables(
+    "db_ip_address" => mysql_info["bind_address"],
+    "db_user" => node["glance"]["db"]["username"],
+    "db_password" => node["glance"]["db"]["password"],
+    "db_name" => node["glance"]["db"]["name"],
     "api_bind_address" => api_endpoint["host"],
     "api_bind_port" => api_endpoint["port"],
     "registry_ip_address" => registry_endpoint["host"],
@@ -131,7 +143,7 @@ template "/etc/glance/glance-api.conf" do
     "service_tenant_name" => node["glance"]["service_tenant_name"],
     "service_user" => node["glance"]["service_user"],
     "service_pass" => node["glance"]["service_pass"],
-    "worker_count" => glance["api"]["worker_count"]
+    "worker_count" => node["glance"]["services"]["api"]["worker_count"]
     )
   notifies :restart, resources(:service => "glance-api"), :immediately
 end
