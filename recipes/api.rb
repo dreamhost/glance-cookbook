@@ -143,7 +143,9 @@ template "/etc/glance/glance-api.conf" do
     "service_tenant_name" => node["glance"]["service_tenant_name"],
     "service_user" => node["glance"]["service_user"],
     "service_pass" => node["glance"]["service_pass"],
-    "worker_count" => node["glance"]["services"]["api"]["worker_count"]
+    "worker_count" => node["glance"]["services"]["api"]["worker_count"],
+    "rbd_user" => glance["api"]["rbd"]["user"],
+    "rbd_pool" => glance["api"]["rbd"]["pool"]
     )
   notifies :restart, resources(:service => "glance-api"), :immediately
 end

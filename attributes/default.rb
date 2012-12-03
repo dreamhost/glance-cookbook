@@ -45,6 +45,8 @@ default["glance"]["api"]["swift"]["store_container"] = "glance"
 default["glance"]["api"]["swift"]["store_large_object_size"] = "200"
 default["glance"]["api"]["swift"]["store_large_object_chunk_size"] = "200"
 default["glance"]["api"]["cache"]["image_cache_max_size"] = "10737418240"
+default["glance"]["api"]["rbd"]["user"] = "images"
+default["glance"]["api"]["rbd"]["pool"] = "images"
 
 # Default Image Locations
 default["glance"]["image_upload"] = false
